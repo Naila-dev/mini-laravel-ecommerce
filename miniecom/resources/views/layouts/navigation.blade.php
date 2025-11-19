@@ -15,6 +15,23 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('shop.index')" :active="request()->routeIs('shop.*')">
+                        {{ __('Shop') }}
+                    </x-nav-link>
+
+                    @php
+                        $cart = session('cart', []);
+                        $cartCount = collect($cart)->sum('quantity');
+                    @endphp
+                    <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.*')">
+                        Cart
+                        @if($cartCount > 0)
+                            <span class="ml-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold bg-red-600 text-white rounded-full">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </x-nav-link>
                 </div>
             </div>
 

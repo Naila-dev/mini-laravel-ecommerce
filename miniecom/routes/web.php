@@ -32,4 +32,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 // Customer shop routes
 Route::get('/', [\App\Http\Controllers\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{product}', [\App\Http\Controllers\ShopController::class, 'show'])->name('shop.show');
+
+Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove/{product}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [\App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+
