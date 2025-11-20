@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Shop;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class CartController extends Controller
 {
-    /**
-     * Display the current cart contents.
-     */
     public function index()
     {
         $cart = session('cart', []);
@@ -24,15 +22,10 @@ class CartController extends Controller
         ]);
     }
 
-    /**
-     * Add a product to the cart.
-     */
     public function add(Request $request, Product $product)
     {
         $quantity = (int) $request->input('quantity', 1);
-        if ($quantity < 1) {
-            $quantity = 1;
-        }
+        if ($quantity < 1) $quantity = 1;
 
         $cart = session('cart', []);
 
@@ -50,37 +43,21 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return redirect()
-            ->route('cart.index')
-            ->with('success', 'Product added to cart.');
+        return redirect()->route('cart.index')->with('success', 'Product added to cart.');
     }
 
-    /**
-     * Remove a single product from the cart.
-     */
     public function remove(int $productId)
     {
         $cart = session('cart', []);
+        if (isset($cart[$productId])) unset($cart[$productId]);
+        session(['cart' => $cart]);
 
-        if (isset($cart[$productId])) {
-            unset($cart[$productId]);
-            session(['cart' => $cart]);
-        }
-
-        return redirect()
-            ->route('cart.index')
-            ->with('success', 'Item removed from cart.');
+        return redirect()->route('cart.index')->with('success', 'Item removed from cart.');
     }
 
-    /**
-     * Clear the entire cart.
-     */
     public function clear()
     {
         session()->forget('cart');
-
-        return redirect()
-            ->route('cart.index')
-            ->with('success', 'Cart cleared.');
+        return redirect()->route('cart.index')->with('success', 'Cart cleared.');
     }
 }

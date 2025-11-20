@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Shop;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ShopController extends Controller
 {
@@ -21,4 +22,3 @@ class ShopController extends Controller
         return view('shop.show', compact('product'));
     }
 }
-
