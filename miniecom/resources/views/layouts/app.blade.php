@@ -11,8 +11,13 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        <!-- Vite CSS & JS -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Optional custom CSS/JS if needed -->
+        <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
+        <!-- <script src="{{ asset('js/script.js') }}" defer></script> -->
+
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

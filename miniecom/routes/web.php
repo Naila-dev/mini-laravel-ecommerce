@@ -1,20 +1,36 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Shop\ShopController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Admin\ProductController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Shop\CheckoutController;
 
-// Landing page
+// -------------------------------------------------------
+// Public shop routes (customers)
+// -------------------------------------------------------
 Route::get('/', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/product/{product}', [ShopController::class, 'show'])->name('shop.show');
 
-// Dashboard (user)
+// Cart routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// -------------------------------------------------------
+// Default user dashboard
+// -------------------------------------------------------
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Profile routes (auth)
+// -------------------------------------------------------
+// User profile routes
+// -------------------------------------------------------
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -23,21 +39,25 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Admin routes (only logged-in users)
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+// -------------------------------------------------------
+// Admin routes
+// -------------------------------------------------------
+Route::middleware(['auth']) // add 'admin' middleware if you have it
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    // Product CRUD routes
-    Route::resource('products', ProductController::class);
-});
+        // Admin dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Customer shop routes
-Route::get('/', [ShopController::class, 'index'])->name('shop.index');
-Route::get('/product/{product}', [ShopController::class, 'show'])->name('shop.show');
+        // Product CRUD
+        Route::resource('/products', ProductController::class);
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+        // Optional: order management
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+        
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+    });
